@@ -44,7 +44,7 @@ import { TransformInterceptor } from '@/core/transform.interceptor';
           },
         },
         defaults: {
-          from: `"No Reply" <${config.get('MAIL_USER')}>`,
+          from: `"No Reply" <${config.get('MAIL_FROM')}>`,
         },
         template: {
           dir: process.cwd() + '/src/mail/templates/',
