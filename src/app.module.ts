@@ -32,32 +32,28 @@ import { TransformInterceptor } from '@/core/transform.interceptor';
     AuthModule,
     MailerModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         transport: {
           host: 'smtp.gmail.com',
-          port: 587,
-          // ignoreTLS: true,
-          // secure: true,
-        auth: {
-          user: configService.get<string>('MAIL_USER'),
-          pass: configService.get<string>('MAIL_PASSWORD'),
+          port: 465,
+          secure: true,
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASSWORD'),
+          },
         },
-      },
-      
-      defaults: {
-        from: '"No Reply" <no-reply@localhost>',
-      },
-      // preview: true,
-      template: {
-        dir: process.cwd() + '/src/mail/templates/',
-        adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-        options: {
-          strict: true,
+        defaults: {
+          from: `"No Reply" <${configService.get<string>('MAIL_USER')}>`,
         },
-      },
+        template: {
+          dir: process.cwd() + '/src/mail/templates/',
+          adapter: new HandlebarsAdapter(),
+          options: { strict: true },
+        },
+      }),
+      inject: [ConfigService],
     }),
-    inject: [ConfigService],
-    }),
+
   ],
   controllers: [AppController],
   providers: [

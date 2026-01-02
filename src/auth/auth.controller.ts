@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-auth.guards';
 import { Public, ResponseMessage } from '@/decorator/customize';
@@ -18,8 +19,11 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @ResponseMessage("Fetch Login")
-  handleLogin(@Request() req: any) {
-    return this.authService.login(req.user);
+  handleLogin(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  )  {
+    return this.authService.login(req.user, res);
   }
 
   // @UseGuards(JwtAuthGuard)
