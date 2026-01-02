@@ -33,24 +33,18 @@ import { TransformInterceptor } from '@/core/transform.interceptor';
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (config: ConfigService) => ({
         transport: {
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false,
+          host: config.get('MAIL_HOST'),
+          port: Number(config.get('MAIL_PORT')),
+          secure: false, // BẮT BUỘC false với 587
           auth: {
-            user: configService.get<string>('MAIL_USER'),
-            pass: configService.get<string>('MAIL_PASSWORD'),
+            user: config.get('MAIL_USER'), // apikey
+            pass: config.get('MAIL_PASSWORD'), // SG.xxx
           },
-          tls: {
-            rejectUnauthorized: false,
-          },
-          connectionTimeout: 20_000,
-          greetingTimeout: 20_000,
-          socketTimeout: 20_000,
         },
         defaults: {
-          from: `"No Reply" <${configService.get<string>('MAIL_USER')}>`,
+          from: `"No Reply" <${config.get('MAIL_USER')}>`,
         },
         template: {
           dir: process.cwd() + '/src/mail/templates/',
@@ -59,6 +53,7 @@ import { TransformInterceptor } from '@/core/transform.interceptor';
         },
       }),
     })
+    
 
 
   ],
